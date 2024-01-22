@@ -2039,6 +2039,13 @@ bool LLParser::parseOptionalCallingConv(unsigned &CC) {
   case lltok::kw_ptx_device:     CC = CallingConv::PTX_Device; break;
   case lltok::kw_spir_kernel:    CC = CallingConv::SPIR_KERNEL; break;
   case lltok::kw_spir_func:      CC = CallingConv::SPIR_FUNC; break;
+  // begin llvm upstream
+  case lltok::kw_pisa_kernel:    CC = CallingConv::PISA_KERNEL; break;
+  case lltok::kw_pisa_func:      CC = CallingConv::PISA_FUNC; break;
+  // begin intel embargo
+  case lltok::kw_pisa_rt_raygen: CC = CallingConv::PISA_RT_RAYGEN; break;
+  case lltok::kw_pisa_rt_dispatch: CC = CallingConv::PISA_RT_DISPATCH; break;
+  // end intel embargo
   case lltok::kw_intel_ocl_bicc: CC = CallingConv::Intel_OCL_BI; break;
   case lltok::kw_x86_64_sysvcc:  CC = CallingConv::X86_64_SysV; break;
   case lltok::kw_win64cc:        CC = CallingConv::Win64; break;

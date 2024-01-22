@@ -153,6 +153,14 @@ enum Kind {
   kw_ptx_device,
   kw_spir_kernel,
   kw_spir_func,
+  // begin llvm upstream
+  kw_pisa_kernel,
+  kw_pisa_func,
+  // begin intel embargo
+  kw_pisa_rt_raygen,
+  kw_pisa_rt_dispatch,
+  // end intel embargo
+  // end llvm upstream
   kw_x86_64_sysvcc,
   kw_win64cc,
   kw_anyregcc,

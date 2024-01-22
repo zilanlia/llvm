@@ -30,6 +30,12 @@ enum Value {
   SGPRSpill = 1,
   ScalableVector = 2,
   WasmLocal = 3,
+  // begin llvm upstream
+  pISAShared = 4,
+  // begin intel embargo
+  XeShared = 4,
+  // end intel embargo
+  // end llvm upstream
   NoAlloc = 255
 };
 }

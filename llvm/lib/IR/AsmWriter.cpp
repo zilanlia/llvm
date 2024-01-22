@@ -337,6 +337,14 @@ static void PrintCallingConv(unsigned cc, raw_ostream &Out) {
   case CallingConv::Win64:         Out << "win64cc"; break;
   case CallingConv::SPIR_FUNC:     Out << "spir_func"; break;
   case CallingConv::SPIR_KERNEL:   Out << "spir_kernel"; break;
+  // begin llvm upstream
+  case CallingConv::PISA_FUNC:     Out << "pisa_func"; break;
+  case CallingConv::PISA_KERNEL:   Out << "pisa_kernel"; break;
+  // begin intel embargo
+  case CallingConv::PISA_RT_RAYGEN:   Out << "pisa_rt_raygen"; break;
+  case CallingConv::PISA_RT_DISPATCH: Out << "pisa_rt_dispatch"; break;
+  // end intel embargo
+  // end llvm upstream
   case CallingConv::Swift:         Out << "swiftcc"; break;
   case CallingConv::SwiftTail:     Out << "swifttailcc"; break;
   case CallingConv::X86_INTR:      Out << "x86_intrcc"; break;

@@ -376,6 +376,12 @@ struct ScalarEnumerationTraits<TargetStackID::Value> {
     IO.enumCase(ID, "sgpr-spill", TargetStackID::SGPRSpill);
     IO.enumCase(ID, "scalable-vector", TargetStackID::ScalableVector);
     IO.enumCase(ID, "wasm-local", TargetStackID::WasmLocal);
+    // begin llvm upstream
+    IO.enumCase(ID, "pisa-shared", TargetStackID::pISAShared);
+    // begin intel embargo
+    IO.enumCase(ID, "xe-shared", TargetStackID::XeShared);
+    // end intel embargo
+    // end llvm upstream
     IO.enumCase(ID, "noalloc", TargetStackID::NoAlloc);
   }
 };

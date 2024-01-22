@@ -608,6 +608,14 @@ lltok::Kind LLLexer::LexIdentifier() {
   KEYWORD(ptx_device);
   KEYWORD(spir_kernel);
   KEYWORD(spir_func);
+  // begin llvm upstream
+  KEYWORD(pisa_kernel);
+  KEYWORD(pisa_func);
+  // begin intel embargo
+  KEYWORD(pisa_rt_raygen);
+  KEYWORD(pisa_rt_dispatch);
+  // end intel embargo
+  // end llvm upstream
   KEYWORD(intel_ocl_bicc);
   KEYWORD(x86_64_sysvcc);
   KEYWORD(win64cc);

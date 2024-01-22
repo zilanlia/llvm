@@ -398,6 +398,8 @@ class LLVMQualPointerType<int addrspace>
     ], [
       IIT_PTR.Number,
     ]);
+  
+  int AddrSpace = addrspace;
 }
 
 class LLVMAnyPointerType : LLVMAnyType<iPTRAny> {
@@ -2592,5 +2594,7 @@ include "llvm/IR/IntrinsicsSPIRV.td"
 include "llvm/IR/IntrinsicsVE.td"
 include "llvm/IR/IntrinsicsDirectX.td"
 include "llvm/IR/IntrinsicsLoongArch.td"
+// begin llvm upstream
+include "llvm/IR/IntrinsicspISA.td"
 
 #endif // TEST_INTRINSICS_SUPPRESS_DEFS

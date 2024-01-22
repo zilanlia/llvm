@@ -99,6 +99,8 @@ public:
     spirv,          // SPIR-V with logical memory layout.
     spirv32,        // SPIR-V with 32-bit pointers
     spirv64,        // SPIR-V with 64-bit pointers
+    // begin llvm upstream
+    pisa,           // pISA 64-bit
     kalimba,        // Kalimba: generic kalimba
     shave,          // SHAVE: Movidius vector VLIW processors
     lanai,          // Lanai: Lanai 32-bit
@@ -780,6 +782,12 @@ public:
   /// Tests whether the target is SPIR (32- or 64-bit).
   bool isSPIR() const {
     return getArch() == Triple::spir || getArch() == Triple::spir64;
+  }
+
+  // begin llvm upstream
+  /// Tests whether the target is pISA (64-bit only).
+  bool ispISA() const {
+    return getArch() == Triple::pisa;
   }
 
   /// Tests whether the target is SPIR-V (32/64-bit/Logical).

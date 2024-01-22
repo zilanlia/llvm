@@ -237,6 +237,21 @@ namespace CallingConv {
     /// Preserve X2-X15, X19-X29, SP, Z0-Z31, P0-P15.
     AArch64_SME_ABI_Support_Routines_PreserveMost_From_X2 = 103,
 
+    // begin llvm upstream
+    /// Used for pISA non-kernel device functions.
+    PISA_FUNC = 108,
+
+    /// Used for pISA kernel functions.
+    PISA_KERNEL = 109,
+    // begin intel embargo
+    /// Used for pISA raygeneration shaders.
+    PISA_RT_RAYGEN = 110,
+
+    /// Used for pISA dispatch shaders.
+    PISA_RT_DISPATCH = 111,
+    // end intel embargo
+    // end llvm upstream
+
     /// Used on AMDGPUs to give the middle-end more control over argument
     /// placement.
     AMDGPU_CS_Chain = 104,

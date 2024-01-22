@@ -89,21 +89,78 @@ class GENX_DeviceFunctionOp<string mnemonic, string fnName,
   let assemblyFormat = "attr-dict `:` type($res)";
 }
 
+class GENX_LocalIdOp<string mnemonic, string fnName,
+                            list<Trait> traits = []>
+  : GENX_Op<mnemonic, !listconcat(traits, [Pure])>,
+    Results<(outs LLVM_Type:$res)>, Arguments<(ins)> {
+  string llvmBuilder = [{
+    llvm::Type *retType = builder.getInt16Ty();
+    llvm::CallInst *ci = createDeviceFunctionCall(builder, "}] # fnName # [{",
+        retType, { }, {});
+    llvm::Type *opRetType = cast<llvm::IntegerType>(
+        moduleTranslation.convertType(op->getResultTypes()[0]));
+    if (opRetType == retType)
+      $res = ci;
+    else {
+      llvm::Instruction::CastOps opcode =
+          llvm::CastInst::getCastOpcode(ci, false, opRetType, false);
+      $res = builder.CreateCast(opcode, ci, opRetType);
+    }
+  }];
+
+  let assemblyFormat = "attr-dict `:` type($res)";
+}
+
+class GENX_WorkGroupIdOp<string mnemonic, string fnName,
+                            list<Trait> traits = []>
+  : GENX_Op<mnemonic, !listconcat(traits, [Pure])>,
+    Results<(outs LLVM_Type:$res)>, Arguments<(ins)> {
+  string llvmBuilder = [{
+    llvm::Type *retType = builder.getInt32Ty();
+    llvm::CallInst *ci = createDeviceFunctionCall(builder, "}] # fnName # [{",
+        retType, { }, {});
+    llvm::Type *opRetType = cast<llvm::IntegerType>(
+        moduleTranslation.convertType(op->getResultTypes()[0]));
+    if (opRetType == retType)
+      $res = ci;
+    else {
+      llvm::Instruction::CastOps opcode =
+          llvm::CastInst::getCastOpcode(ci, false, opRetType, false);
+      $res = builder.CreateCast(opcode, ci, opRetType);
+    }
+  }];
+
+  let assemblyFormat = "attr-dict `:` type($res)";
+}
+
 //===----------------------------------------------------------------------===//
 // Thread index and Block index
 
-def GENX_ThreadIdXOp : GENX_DeviceFunctionOp<"workitem.id.x",
-                        "_Z12get_local_idj", 0>;
-def GENX_ThreadIdYOp : GENX_DeviceFunctionOp<"workitem.id.y",
-                        "_Z12get_local_idj", 1>;
-def GENX_ThreadIdZOp : GENX_DeviceFunctionOp<"workitem.id.z",
-                        "_Z12get_local_idj", 2>;
-def GENX_BlockIdXOp : GENX_DeviceFunctionOp<"workgroup.id.x",
-                        "_Z12get_group_idj", 0>;
-def GENX_BlockIdYOp : GENX_DeviceFunctionOp<"workgroup.id.y",
-                        "_Z12get_group_idj", 1>;
-def GENX_BlockIdZOp : GENX_DeviceFunctionOp<"workgroup.id.z",
-                        "_Z12get_group_idj", 2>;
+// def GENX_ThreadIdXOp : GENX_DeviceFunctionOp<"workitem.id.x",
+//                         "_Z12get_local_idj", 0>;
+// def GENX_ThreadIdYOp : GENX_DeviceFunctionOp<"workitem.id.y",
+//                         "_Z12get_local_idj", 1>;
+// def GENX_ThreadIdZOp : GENX_DeviceFunctionOp<"workitem.id.z",
+//                         "_Z12get_local_idj", 2>;
+// def GENX_BlockIdXOp : GENX_DeviceFunctionOp<"workgroup.id.x",
+//                         "_Z12get_group_idj", 0>;
+// def GENX_BlockIdYOp : GENX_DeviceFunctionOp<"workgroup.id.y",
+//                         "_Z12get_group_idj", 1>;
+// def GENX_BlockIdZOp : GENX_DeviceFunctionOp<"workgroup.id.z",
+//                         "_Z12get_group_idj", 2>;
+
+def GENX_ThreadIdXOp : GENX_LocalIdOp<"workitem.id.x",
+                        "llvm.pisa.localid.x">;
+def GENX_ThreadIdYOp : GENX_LocalIdOp<"workitem.id.y",
+                        "llvm.pisa.localid.y">;
+def GENX_ThreadIdZOp : GENX_LocalIdOp<"workitem.id.z",
+                        "llvm.pisa.localid.z">;
+def GENX_BlockIdXOp : GENX_WorkGroupIdOp<"workgroup.id.x",
+                        "llvm.pisa.groupid.x">;
+def GENX_BlockIdYOp : GENX_WorkGroupIdOp<"workgroup.id.y",
+                        "llvm.pisa.groupid.y">;
+def GENX_BlockIdZOp : GENX_WorkGroupIdOp<"workgroup.id.z",
+                        "llvm.pisa.groupid.z">;
 
 //===----------------------------------------------------------------------===//
 // Block and Grid range
