@@ -61,16 +61,20 @@ static llvm::CallInst *createSubGroupShuffle(llvm::IRBuilderBase &builder,
   std::string fnName = "";
   switch (kind) {
   case GENX::ShflKind::XOR:
-    fnName = "_Z21sub_group_shuffle_xor";
+    //fnName = "_Z21sub_group_shuffle_xor";
+    fnName = "llvm.pisa.shfl.xor";
     break;
   case GENX::ShflKind::UP:
-    fnName = "_Z20sub_group_shuffle_up";
+    //fnName = "_Z20sub_group_shuffle_up";
+    fnName = "llvm.pisa.shfl.up";
     break;
   case GENX::ShflKind::DOWN:
-    fnName = "_Z22sub_group_shuffle_down";
+    // fnName = "_Z22sub_group_shuffle_down";
+    fnName = "llvm.pisa.shfl.down";
     break;
   case GENX::ShflKind::IDX:
-    fnName = "_Z17sub_group_shuffle";
+    // fnName = "_Z17sub_group_shuffle";
+    fnName = "llvm.pisa.shfl";
     break;
   }
 
@@ -94,9 +98,13 @@ static llvm::CallInst *createSubGroupShuffle(llvm::IRBuilderBase &builder,
 
   fnName += "j";
 
+  //todo default value
+  llvm::Type *i32Ty = builder.getInt32Ty();
+  llvm::Value *defaultVal = llvm::ConstantInt::get(i32Ty, 0);
+
   return createDeviceFunctionCall(builder, fnName, value->getType(),
-                                  {value->getType(), mask->getType()},
-                                  {value, mask}, true /*convergent*/);
+                                  {value->getType(), mask->getType(), i32Ty},
+                                  {value, mask, defaultVal}, true /*convergent*/);
 }
 
 //===----------------------------------------------------------------------===//
