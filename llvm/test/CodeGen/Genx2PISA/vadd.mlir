@@ -370,3 +370,74 @@ attributes #1 = { nofree nosync nounwind memory(none) }
 !6 = !{!"Intel(R) oneAPI DPC++/C++ Compiler 2023.2.0 (2023.2.0.20230622)"}
 !7 = !{i64 32}
 !8 = !{i64 128, i64 1, i64 1}
+
+pisaBitcode:
+.kernel  @add_kernel_0d1d2d3de(.param[8] %arg0, .param[8] %arg1, .param[8] %arg2, .param[4] %arg3)
+{
+        .reg .64b %r0, %r1, %r2, %r10, %r12;
+        .reg .32b %r3, %r6, %r7, %r8, %r9;
+        .reg .16b %r4, %r5;
+        .pred %p0, %p1;
+        .reg .v4.32b %r11, %r13, %r14, %r15, %r16;
+        .reg .v4.32b %r17;
+// %bb.0:
+        ld.param.64b %r0, [%arg0];
+        ld.param.64b %r1, [%arg1];
+        ld.param.64b %r2, [%arg2];
+        ld.param.32b %r3, [%arg3];
+        shl.16b         %r4, %localid.x, 2;
+        and.16b         %r5, %r4, 508;
+        zext.32b.16b    %r6, %r5;
+        shl.32b         %r7, %groupid.x, 10;
+        or.32b  %r8, %r7, %r6;
+        or.32b  %r9, %r8, 512;
+        scmp.lt.32b     %p0, %r8, %r3;
+        smul.full.32b   %r10, %r8, 4;
+                                        // implicit-def: %300
+        (!%p0) goto LBB0_2;
+// %bb.1:
+        ld.global.v4.32b         %r11, [%r0 + %r10];
+LBB0_2:
+        smul.full.32b   %r12, %r9, 4;
+        scmp.lt.32b     %p1, %r9, %r3;
+                                        // implicit-def: %301
+        (%p1) goto LBB0_3;
+// %bb.4:
+                                        // implicit-def: %302
+        (%p0) goto LBB0_5;
+LBB0_6:
+                                        // implicit-def: %303
+        (%p1) goto LBB0_7;
+LBB0_8:
+        (%p0) goto LBB0_9;
+LBB0_10:
+        (!%p1) goto LBB0_12;
+LBB0_11:
+        fadd    %r16.x, %r13.x, %r15.x;
+        fadd    %r16.y, %r13.y, %r15.y;
+        fadd    %r16.z, %r13.z, %r15.z;
+        fadd    %r16.w, %r13.w, %r15.w;
+        st.global.v4.32b         [%r2 + %r12], %r16;
+LBB0_12:
+        return void;
+LBB0_3:
+        ld.global.v4.32b         %r13, [%r0 + %r12];
+                                        // implicit-def: %302
+        (!%p0) goto LBB0_6;
+LBB0_5:
+        ld.global.v4.32b         %r14, [%r1 + %r10];
+                                        // implicit-def: %303
+        (!%p1) goto LBB0_8;
+LBB0_7:
+        ld.global.v4.32b         %r15, [%r1 + %r12];
+        (!%p0) goto LBB0_10;
+LBB0_9:
+        fadd    %r17.w, %r11.w, %r14.w;
+        fadd    %r17.x, %r11.x, %r14.x;
+        fadd    %r17.y, %r11.y, %r14.y;
+        fadd    %r17.z, %r11.z, %r14.z;
+        st.global.v4.32b         [%r2 + %r10], %r17;
+        (%p1) goto LBB0_11;
+        goto LBB0_12;
+}
+                                        // -- End function
