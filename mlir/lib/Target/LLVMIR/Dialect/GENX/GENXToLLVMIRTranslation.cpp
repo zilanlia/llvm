@@ -108,6 +108,10 @@ static llvm::CallInst *createSubGroupShuffle(llvm::IRBuilderBase &builder,
     // llvm::outs() << "\n\nconvert fp32 to int before shuffle\n";
   }
 
+  //todo default value
+  llvm::Type *i32Ty = builder.getInt32Ty();
+  llvm::Value *defaultVal = llvm::ConstantInt::get(i32Ty, 0);
+
   return createDeviceFunctionCall(builder, fnName, value->getType(),
                                   {value->getType(), mask->getType(), i32Ty},
                                   {value, mask, defaultVal}, true /*convergent*/);
@@ -297,7 +301,8 @@ public:
 
     // Set calling convention for kernel
     if (attrName == GENX::GENXDialect::getKernelFuncAttrName())
-      llvmFunc->setCallingConv(llvm::CallingConv::SPIR_KERNEL);
+      // llvmFunc->setCallingConv(llvm::CallingConv::SPIR_KERNEL);
+      llvmFunc->setCallingConv(llvm::CallingConv::PISA_KERNEL);
 
     auto attachMetadata = [&](StringRef name) {
       SmallVector<llvm::Metadata *, 3> metadata;
@@ -311,12 +316,12 @@ public:
     };
 
     // Set max_work_group_size metadata.
-    if (attrName == GENX::GENXDialect::getMaxWorkGroupSizeAttrName()) {
-      if (!attrVal.dyn_cast<ArrayAttr>())
-        return failure();
+    // if (attrName == GENX::GENXDialect::getMaxWorkGroupSizeAttrName()) {
+    //   if (!attrVal.dyn_cast<ArrayAttr>())
+    //     return failure();
 
-      attachMetadata("max_work_group_size");
-    }
+    //   attachMetadata("max_work_group_size");
+    // }
 
     // Set reqd_work_group_size metadata.
     if (attrName == GENX::GENXDialect::getReqdWorkGroupSizeAttrName()) {
@@ -327,12 +332,12 @@ public:
     }
 
     // Set intel_reqd_sub_group_size metadata.
-    if (attrName == GENX::GENXDialect::getReqdSubGroupSizeAttrName()) {
-      if (!attrVal.dyn_cast<ArrayAttr>())
-        return failure();
+    // if (attrName == GENX::GENXDialect::getReqdSubGroupSizeAttrName()) {
+    //   if (!attrVal.dyn_cast<ArrayAttr>())
+    //     return failure();
 
-      attachMetadata("intel_reqd_sub_group_size");
-    }
+    //   attachMetadata("intel_reqd_sub_group_size");
+    // }
 
     return success();
   }
