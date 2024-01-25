@@ -13,8 +13,8 @@ tablegen(LLVM pISAGenSubtargetInfo.inc -gen-subtarget)
 tablegen(LLVM pISAGenTables.inc -gen-searchable-tables)
 #tablegen(LLVM pISAGenPreLegalizeGICombiner.inc -gen-global-isel-combiner
 #              -combiners="pISAPreLegalizerCombinerHelper")
-#tablegen(LLVM pISAGenPostLegalizeGICombiner.inc -gen-global-isel-combiner
-#              -combiners="pISAPostLegalizerCombinerHelper")
+tablegen(LLVM pISAGenPostLegalizeGICombiner.inc -gen-global-isel-combiner
+              -combiners="pISAPostLegalizerCombiner")
 
 add_public_tablegen_target(pISACommonTableGen)
 
@@ -32,7 +32,7 @@ add_llvm_target(pISACodeGen
   pISALegalizerInfo.cpp
   pISALegalizeSubregAccess.cpp
   pISAMCInstLower.cpp
-  #pISAPostLegalizerCombiner.cpp
+  pISAPostLegalizerCombiner.cpp
   #pISAPreLegalizerCombiner.cpp
   pISARegisterBankInfo.cpp
   pISARegisterInfo.cpp

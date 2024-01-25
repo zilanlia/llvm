@@ -9,7 +9,6 @@
 // Implements the info about pISA target spec.
 //
 //===----------------------------------------------------------------------===//
-
 #include "pISATargetMachine.h"
 #include "pISA.h"
 #include "pISACallLowering.h"
@@ -45,7 +44,7 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializepISATarget() {
   initializepISAInputTranslatorPass(PR);
   initializepISALegalizeSubregAccessPass(PR);
   // initializepISAPreLegalizerCombinerPass(PR);
-  // initializepISAPostLegalizerCombinerPass(PR);
+  initializepISAPostLegalizerCombinerPass(PR);
 }
 
 static std::string computeDataLayout(const Triple &TT) {
@@ -174,6 +173,7 @@ bool pISAPassConfig::addIRTranslator() {
 
 void pISAPassConfig::addPreLegalizeMachineIR() {
   addPass(createpISADetermineStackID());
+  llvm::outs() <<"\n\naddPass(createpISAPreLegalizerCombiner())\n";
   // if (getOptLevel() != CodeGenOptLevel::None)
   //   addPass(createpISAPreLegalizerCombiner());
 }
@@ -185,8 +185,10 @@ bool pISAPassConfig::addLegalizeMachineIR() {
 }
 
 void pISAPassConfig::addPreRegBankSelect() {
-  // if (getOptLevel() != CodeGenOptLevel::None)
-  //   addPass(createpISAPostLegalizerCombiner());
+  llvm::outs() <<"\n\naddPass(createpISAPostLegalizerCombiner())\n";
+  bool IsOptNone = getOptLevel() == CodeGenOptLevel::None;
+  if (getOptLevel() != CodeGenOptLevel::None)
+    addPass(createpISAPostLegalizerCombiner(IsOptNone));
 }
 
 bool pISAPassConfig::addRegBankSelect() {

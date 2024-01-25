@@ -29,8 +29,8 @@ createpISAInstructionSelector(const pISATargetMachine &TM,
                               const RegisterBankInfo &RBI);
 FunctionPass* createpISADetermineStackID();
 FunctionPass* createpISALegalizeSubregAccess();
-FunctionPass* createpISAPreLegalizerCombiner();
-FunctionPass* createpISAPostLegalizerCombiner();
+// FunctionPass* createpISAPreLegalizerCombiner();
+FunctionPass* createpISAPostLegalizerCombiner(bool IsOptNone);
 
 void initializepISADetermineStackIDPass(PassRegistry &);
 void initializepISAEmitIntrinsicsPass(PassRegistry &);
@@ -38,7 +38,7 @@ void initializepISAExpandIntrinsicsPass(PassRegistry &);
 void initializepISAInputTranslatorPass(PassRegistry &);
 void initializepISALegalizeSubregAccessPass(PassRegistry &);
 // void initializepISAPreLegalizerCombinerPass(PassRegistry &);
-// void initializepISAPostLegalizerCombinerPass(PassRegistry &);
+void initializepISAPostLegalizerCombinerPass(PassRegistry &);
 
 namespace pISA {
 LLVM_READONLY int16_t getNamedOperandIdx(uint16_t Opcode, uint16_t NamedIdx);

@@ -47,14 +47,14 @@ def extra_commute_constant_to_rhs : GICombineRule<
 //   let CombineAllMethodName = "tryCombineAllImpl";
 // }
 
-def pISAPreLegalizerCombinerHelper: GICombiner<
-  "pISAGenPreLegalizerCombinerHelper",
-  !listremove(all_combines.Rules, [combines_for_extload])> {
-  let CombineAllMethodName = "tryCombineAllImpl";
-}
+// def pISAPreLegalizerCombiner: GICombiner<
+//   "pISAPreLegalizerCombinerImpl",
+//   !listremove(all_combines.Rules, [combines_for_extload])> {
+//   let CombineAllMethodName = "tryCombineAllImpl";
+// }
 
-def pISAPostLegalizerCombinerHelper: GICombiner<
-  "pISAGenPostLegalizerCombinerHelper",
+def pISAPostLegalizerCombiner: GICombiner<
+  "pISAPostLegalizerCombinerImpl",
   [commute_constant_to_rhs, extra_commute_constant_to_rhs,
    copy_prop]> {
   let CombineAllMethodName = "tryCombineAllImpl";
