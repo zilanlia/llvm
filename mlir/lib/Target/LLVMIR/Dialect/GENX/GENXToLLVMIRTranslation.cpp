@@ -78,29 +78,35 @@ static llvm::CallInst *createSubGroupShuffle(llvm::IRBuilderBase &builder,
     break;
   }
 
-  llvm::Type *ty = value->getType();
-  if (ty->isHalfTy())
-    fnName += "Dh";
-  else if (ty->isFloatTy())
-    fnName += "f";
-  else if (ty->isDoubleTy())
-    fnName += "d";
-  else if (ty->isIntegerTy(8))
-    fnName += "c";
-  else if (ty->isIntegerTy(16))
-    fnName += "s";
-  else if (ty->isIntegerTy(32))
-    fnName += "i";
-  else if (ty->isIntegerTy(64))
-    fnName += "l";
-  else
-    llvm_unreachable("unhandled type");
+  // llvm::Type *ty = value->getType();
+  // if (ty->isHalfTy())
+  //   fnName += "Dh";
+  // else if (ty->isFloatTy())
+  //   fnName += "f";
+  // else if (ty->isDoubleTy())
+  //   fnName += "d";
+  // else if (ty->isIntegerTy(8))
+  //   fnName += "c";
+  // else if (ty->isIntegerTy(16))
+  //   fnName += "s";
+  // else if (ty->isIntegerTy(32))
+  //   fnName += "i";
+  // else if (ty->isIntegerTy(64))
+  //   fnName += "l";
+  // else
+  //   llvm_unreachable("unhandled type");
 
-  fnName += "j";
+  // fnName += "j";
 
   //todo default value
   llvm::Type *i32Ty = builder.getInt32Ty();
   llvm::Value *defaultVal = llvm::ConstantInt::get(i32Ty, 0);
+
+  //WR pisa only support int type for shuffle op
+  if (value->getType() != i32Ty){
+    value = builder.CreateBitCast(value, i32Ty);
+    // llvm::outs() << "\n\nconvert fp32 to int before shuffle\n";
+  }
 
   return createDeviceFunctionCall(builder, fnName, value->getType(),
                                   {value->getType(), mask->getType(), i32Ty},

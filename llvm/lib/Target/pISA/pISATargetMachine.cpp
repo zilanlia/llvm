@@ -173,7 +173,6 @@ bool pISAPassConfig::addIRTranslator() {
 
 void pISAPassConfig::addPreLegalizeMachineIR() {
   addPass(createpISADetermineStackID());
-  llvm::outs() <<"\n\naddPass(createpISAPreLegalizerCombiner())\n";
   // if (getOptLevel() != CodeGenOptLevel::None)
   //   addPass(createpISAPreLegalizerCombiner());
 }
@@ -185,7 +184,6 @@ bool pISAPassConfig::addLegalizeMachineIR() {
 }
 
 void pISAPassConfig::addPreRegBankSelect() {
-  llvm::outs() <<"\n\naddPass(createpISAPostLegalizerCombiner())\n";
   bool IsOptNone = getOptLevel() == CodeGenOptLevel::None;
   if (getOptLevel() != CodeGenOptLevel::None)
     addPass(createpISAPostLegalizerCombiner(IsOptNone));

@@ -243,8 +243,20 @@ def GENX_SubGroupShuffleOp : GENX_Op<"sub_group_shuffle", [
     - $kind == DOWN, the current invocation’s subgroup local ID + $mask.
     - $kind == IDX, the subgroup local ID $mask.
   }];
+  // pisa only support int32 shuffle by now
   string llvmBuilder = [{
-    $res = createSubGroupShuffle(builder, $value, $mask, $kind);
+    llvm::Type *retType = builder.getInt32Ty();
+    llvm::Type *opRetType = cast<llvm::Type>(
+        moduleTranslation.convertType(op->getResultTypes()[0]));
+
+    if (opRetType == retType)
+      $res = createSubGroupShuffle(builder, $value, $mask, $kind);
+    else {
+      llvm::CallInst *ci = createSubGroupShuffle(builder, $value, $mask, $kind);
+      llvm::Instruction::CastOps opcode =
+          llvm::CastInst::getCastOpcode(ci, false, opRetType, false);
+      $res = builder.CreateCast(opcode, ci, opRetType);
+    }
   }];
   let assemblyFormat = [{
     $kind $value `,` $mask attr-dict `:` type($value) `->` type($res)
