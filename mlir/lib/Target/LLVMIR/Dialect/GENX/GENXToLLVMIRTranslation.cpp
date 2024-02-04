@@ -39,7 +39,8 @@ static llvm::CallInst *createDeviceFunctionCall(llvm::IRBuilderBase &builder,
       llvm::FunctionType::get(retType, argTypes, /*isVarArg*/ false);
   auto *fn = dyn_cast<llvm::Function>(
       module->getOrInsertFunction(fnName, functionType).getCallee());
-  fn->setCallingConv(llvm::CallingConv::SPIR_FUNC);
+  //fn->setCallingConv(llvm::CallingConv::SPIR_FUNC);
+  fn->setCallingConv(llvm::CallingConv::PISA_FUNC);
   if (convergent)
     fn->setConvergent();
   auto *ci = builder.CreateCall(fn, args);
@@ -107,10 +108,6 @@ static llvm::CallInst *createSubGroupShuffle(llvm::IRBuilderBase &builder,
     value = builder.CreateBitCast(value, i32Ty);
     // llvm::outs() << "\n\nconvert fp32 to int before shuffle\n";
   }
-
-  //todo default value
-  llvm::Type *i32Ty = builder.getInt32Ty();
-  llvm::Value *defaultVal = llvm::ConstantInt::get(i32Ty, 0);
 
   return createDeviceFunctionCall(builder, fnName, value->getType(),
                                   {value->getType(), mask->getType(), i32Ty},

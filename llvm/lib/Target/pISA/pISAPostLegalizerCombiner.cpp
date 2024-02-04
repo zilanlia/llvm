@@ -101,15 +101,15 @@ bool pISAPostLegalizerCombinerImpl::tryCombineAll(MachineInstr &MI) const {
   if (tryCombineAllImpl(MI))
     return true;
 
-  switch (MI.getOpcode()) {
-  case TargetOpcode::G_SHL:
-  case TargetOpcode::G_LSHR:
-  case TargetOpcode::G_ASHR:
-    // On some subtargets, 64-bit shift is a quarter rate instruction. In the
-    // common case, splitting this into a move and a 32-bit shift is faster and
-    // the same code size.
-    return Helper.tryCombineShiftToUnmerge(MI, 32);
-  }
+  // switch (MI.getOpcode()) {
+  // case TargetOpcode::G_SHL:
+  // case TargetOpcode::G_LSHR:
+  // case TargetOpcode::G_ASHR:
+  //   // On some subtargets, 64-bit shift is a quarter rate instruction. In the
+  //   // common case, splitting this into a move and a 32-bit shift is faster and
+  //   // the same code size.
+  //   return Helper.tryCombineShiftToUnmerge(MI, 32);
+  // }
 
   return false;
 }

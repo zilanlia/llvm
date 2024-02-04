@@ -191,7 +191,10 @@ def CConvPTX_Kernel : LLVM_EnumAttrCase<"PTX_Kernel", "ptx_kernelcc",
                                         "PTX_Kernel", 71>;
 def CConvPTX_Device : LLVM_EnumAttrCase<"PTX_Device", "ptx_devicecc",
                                         "PTX_Device", 72>;
-def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "spir_funccc",
+// def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "spir_funccc",
+//                                        "SPIR_FUNC", 75>;
+//todo
+def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "pisa_funccc",
                                        "SPIR_FUNC", 75>;
 def CConvSPIR_KERNEL : LLVM_EnumAttrCase<"SPIR_KERNEL", "spir_kernelcc",
                                          "SPIR_KERNEL", 76>;
@@ -247,6 +250,10 @@ def CConvAMDGPU_Gfx : LLVM_EnumAttrCase<"AMDGPU_Gfx", "amdgpu_gfxcc",
                                         "AMDGPU_Gfx", 100>;
 def CConvM68k_INTR : LLVM_EnumAttrCase<"M68k_INTR", "m68k_intrcc", "M68k_INTR",
                                        101>;
+def CConvPISA_FUNC : LLVM_EnumAttrCase<"PISA_FUNC", "pisa_funccc",
+                                       "PISA_FUNC", 108>;
+def CConvPISA_KERNEL : LLVM_EnumAttrCase<"PISA_KERNEL", "pisa_kernelcc",
+                                         "PISA_KERNEL", 109>;
 
 def CConvEnum : LLVM_CEnumAttr<
     "CConv",
@@ -263,7 +270,8 @@ def CConvEnum : LLVM_CEnumAttr<
      CConvAMDGPU_VS, CConvAMDGPU_GS, CConvAMDGPU_CS, CConvAMDGPU_KERNEL,
      CConvX86_RegCall, CConvAMDGPU_HS, CConvMSP430_BUILTIN, CConvAMDGPU_LS,
      CConvAMDGPU_ES, CConvAArch64_VectorCall, CConvAArch64_SVE_VectorCall,
-     CConvWASM_EmscriptenInvoke, CConvAMDGPU_Gfx, CConvM68k_INTR
+     CConvWASM_EmscriptenInvoke, CConvAMDGPU_Gfx, CConvM68k_INTR,
+     CConvPISA_FUNC, CConvPISA_KERNEL
     ]> {
   let cppNamespace = "::mlir::LLVM::cconv";
 }
