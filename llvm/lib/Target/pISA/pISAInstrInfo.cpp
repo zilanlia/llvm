@@ -392,6 +392,7 @@ void pISAInstrInfo::copyPhysReg(MachineBasicBlock& MBB,
     IsBitcast = false;
 
     switch (DstSubEltSize) {
+    case 1:  Op = pISA::mov_8r;  break;
     case 8:  Op = pISA::mov_8r;  break;
     case 16: Op = pISA::mov_16r; break;
     case 32: Op = pISA::mov_32r; break;

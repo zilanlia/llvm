@@ -166,18 +166,18 @@ void mlir::populateGpuToGENXConversionPatterns(LLVMTypeConverter &converter,
 
   const llvm::StringRef prefix("__builtin_spirv_OpenCL_");
 
-  populateOpPatterns<math::ExpOp>(converter, patterns,
-                                  (prefix + "exp_f32").str(),
-                                  (prefix + "exp_f64").str());
-  populateOpPatterns<math::LogOp>(converter, patterns,
-                                  (prefix + "log_f32").str(),
-                                  (prefix + "log_f64").str());
-  populateOpPatterns<math::CosOp>(converter, patterns,
-                                  (prefix + "cos_f32").str(),
-                                  (prefix + "cos_f64").str());
-  populateOpPatterns<math::SinOp>(converter, patterns,
-                                  (prefix + "sin_f32").str(),
-                                  (prefix + "sin_f64").str());
+  // populateOpPatterns<math::ExpOp>(converter, patterns,
+  //                                 (prefix + "exp_f32").str(),
+  //                                 (prefix + "exp_f64").str());
+  // populateOpPatterns<math::LogOp>(converter, patterns,
+  //                                 (prefix + "log_f32").str(),
+  //                                 (prefix + "log_f64").str());
+  // populateOpPatterns<math::CosOp>(converter, patterns,
+  //                                 (prefix + "cos_f32").str(),
+  //                                 (prefix + "cos_f64").str());
+  // populateOpPatterns<math::SinOp>(converter, patterns,
+  //                                 (prefix + "sin_f32").str(),
+  //                                 (prefix + "sin_f64").str());
 }
 
 std::unique_ptr<OperationPass<gpu::GPUModuleOp>>
