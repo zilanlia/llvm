@@ -191,10 +191,7 @@ def CConvPTX_Kernel : LLVM_EnumAttrCase<"PTX_Kernel", "ptx_kernelcc",
                                         "PTX_Kernel", 71>;
 def CConvPTX_Device : LLVM_EnumAttrCase<"PTX_Device", "ptx_devicecc",
                                         "PTX_Device", 72>;
-// def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "spir_funccc",
-//                                        "SPIR_FUNC", 75>;
-//todo
-def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "pisa_funccc",
+def CConvSPIR_FUNC : LLVM_EnumAttrCase<"SPIR_FUNC", "spir_funccc",
                                        "SPIR_FUNC", 75>;
 def CConvSPIR_KERNEL : LLVM_EnumAttrCase<"SPIR_KERNEL", "spir_kernelcc",
                                          "SPIR_KERNEL", 76>;

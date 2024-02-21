@@ -148,6 +148,13 @@ void pISAInputTranslator::visitCallInst(CallInst& CI) {
     NewVal = IRB.CreateIntrinsic(Intrinsic::fma, CI.getType(),
       { CI.getArgOperand(0), CI.getArgOperand(1), CI.getArgOperand(2) });
   }
+  else if (F->getName().startswith("__imf_umulhi")) {
+    Value* lhs = IRB.CreateSExt(CI.getArgOperand(0), IRB.getInt64Ty());
+    Value* rhs = IRB.CreateSExt(CI.getArgOperand(1), IRB.getInt64Ty());
+    Value* product64b = IRB.CreateMul(lhs, rhs);
+    Value* productHigh32b = IRB.CreateLShr(product64b, IRB.getInt64(32));
+    NewVal = IRB.CreateTrunc(productHigh32b, IRB.getInt32Ty());
+  }
   else if (F->getName() == "llvm.genx.GenISA.PreemptionDisable") {
     // The idea is that the finalizer should be taking care of preemption
     // controls. So we don't currently expose it in pISA.
