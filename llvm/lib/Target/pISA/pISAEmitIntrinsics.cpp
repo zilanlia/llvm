@@ -128,6 +128,17 @@ void pISAEmitIntrinsics::visitIntrinsicInst(IntrinsicInst &I) {
     Changed = true;
     break;
   }
+  case Intrinsic::experimental_constrained_sqrt: {
+    auto *CII = cast<ConstrainedFPIntrinsic>(&I);
+    auto *Sqrt =
+        IRB->CreateUnaryIntrinsic(Intrinsic::sqrt, CII->getOperand(0), CII);
+    auto *AssignRnd =
+        insertAssignRndMode(Sqrt, CII->getRoundingMode().value());
+    I.replaceAllUsesWith(AssignRnd);
+    I.eraseFromParent();
+    Changed = true;
+    break;
+  }
   case Intrinsic::experimental_constrained_fmuladd: {
     auto *CI = cast<ConstrainedFPIntrinsic>(&I);
     auto *FMulAdd = IRB->CreateIntrinsic(

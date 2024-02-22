@@ -93,7 +93,7 @@ private:
   bool emitBuildVector(
     MachineInstr& InsertPt, Register DstReg, ArrayRef<Register> Srcs) const;
 
-  bool useFastFP(MachineInstr &I) const {
+  bool useFastFP(const MachineInstr &I) const {
     return (TMI.Options.UnsafeFPMath || I.getFlag(MachineInstr::MIFlag::FmAfn));
   }
 };

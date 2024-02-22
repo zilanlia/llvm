@@ -28,6 +28,18 @@ class immType<bit IsSigned, ValueType VT, ValueType extVT = VT> {
 
 }
 
+class SupportProperty<bit value> {
+  bit has = value;
+}
+
+class FTZProperty<bit value> : SupportProperty<value>;
+def NoSupportFTZ : FTZProperty<0>;
+def SupportFTZ   : FTZProperty<1>;
+
+class RoundingModeProperty<bit value> : SupportProperty<value>;
+def NoSupportRoundingMode : RoundingModeProperty<0>;
+def SupportRoundingMode   : RoundingModeProperty<1>;
+
 class PrintDispatch<string PM, ValueType Ty, string OpType> : OperandWithDefaultOps<Ty, (ops (Ty 0))> {
   let PrintMethod = PM;
   let OperandNamespace = "pISA";
@@ -93,12 +105,26 @@ multiclass FtruncInst<pisaFloatVT ToVT, pisaFloatVT FromVT> {
   } // ftz
 } // multiclass
 
+class fastunaryop<SDNode nodeop> :
+    PatFrag<(ops node:$src), (nodeop node:$src), [{ /* empty */ }]> {
+  let GISelPredicateCode = [{ return useFastFP(MI); }];
+}
+
 multiclass UnaryFloatInst<string name, SDNode node> {
   foreach VT = [_f16, _f32, _f64] in {
     defvar directive = VT.directive;
     defvar opcode = VT.opcode;
     def opcode#r : UnaryInst_r<name#directive, node, VT, VT>;
   }
+}
+
+multiclass UnaryFloatInstFast<string name, SDNode node> {
+  defm "" : UnaryFloatInst<name, node>;
+
+  // fast mode is only supported for single precision FP. Rounding mode is also
+  // dropped.
+  def _fastr : UnaryInst_r<name#".fast", fastunaryop<node>, _f32, _f32>, Requires<[noFTZ]>;
+  def _ftz_fastr : UnaryInst_r<name#".ftz.fast", fastunaryop<node>, _f32, _f32>, Requires<[useFTZ]>;
 }
 
 class BinInst_rr<string name, SDNode node, pisaVT src0VT, pisaVT src1VT>
@@ -901,6 +927,7 @@ defm fsin: UnaryFloatMathInst<"fsin", fsin>;
 defm fcos: UnaryFloatMathInst<"fcos", fcos>;
 defm flog2: UnaryFloatMathInst<"flog2", flog2>;
 defm fexp2: UnaryFloatMathInst<"fexp2", fexp2>;
+defm fsqrt: UnaryFloatInstFast<"fsqrt", fsqrt>;
 
 // 9.3 Bitwise Instructions
 

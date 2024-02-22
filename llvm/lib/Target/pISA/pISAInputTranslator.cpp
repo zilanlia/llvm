@@ -155,6 +155,13 @@ void pISAInputTranslator::visitCallInst(CallInst& CI) {
     Value* productHigh32b = IRB.CreateLShr(product64b, IRB.getInt64(32));
     NewVal = IRB.CreateTrunc(productHigh32b, IRB.getInt32Ty());
   }
+  else if (F->getName().startswith("__imf_rsqrtf")) {
+    NewVal = IRB.CreateIntrinsic(Intrinsic::sqrt, CI.getType(),
+      { CI.getArgOperand(0)});
+    Type *FltTy = IRB.getFloatTy();
+    Value *Val = ConstantFP::get(FltTy, 1.0);
+    NewVal = IRB.CreateFDiv(Val, NewVal);
+  }
   else if (F->getName() == "llvm.genx.GenISA.PreemptionDisable") {
     // The idea is that the finalizer should be taking care of preemption
     // controls. So we don't currently expose it in pISA.
