@@ -26,7 +26,18 @@ pISAMCAsmInfo::pISAMCAsmInfo(const Triple &TT,
 
   CodePointerSize = 4;
   CommentString = "//";
+
+  InlineAsmStart = " begin inline asm";
+  InlineAsmEnd = " end inline asm";
+
   HasFunctionAlignment = false;
+
+  UseIntegratedAssembler = false;
+
+  // Avoid using parens for identifiers starting with $
+  UseParensForDollarSignNames = false;
+
+  EnableDwarfFileDirectoryDefault = false;
 }
 
 bool pISAMCAsmInfo::shouldOmitSectionDirective(StringRef SectionName) const {

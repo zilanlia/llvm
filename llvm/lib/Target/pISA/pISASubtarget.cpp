@@ -17,6 +17,7 @@
 #include "pISATargetMachine.h"
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/TargetParser/Host.h"
+#include "llvm/CodeGen/GlobalISel/InlineAsmLowering.h"
 
 using namespace llvm;
 
@@ -35,6 +36,7 @@ pISASubtarget::pISASubtarget(const Triple &TT, const std::string &CPU,
       TLInfo(TM, *this) {
 
   CallLoweringInfo = std::make_unique<pISACallLowering>(TLInfo);
+  InlineAsmLoweringInfo.reset(new InlineAsmLowering(getTargetLowering()));
   Legalizer = std::make_unique<pISALegalizerInfo>(*this);
   RegBankInfo = std::make_unique<pISARegisterBankInfo>();
   InstSelector.reset(

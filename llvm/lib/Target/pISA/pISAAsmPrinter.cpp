@@ -66,6 +66,8 @@ private:
 
   void outputInstruction(const MachineInstr *MI);
   void printOperand(const MachineInstr *MI, int OpNum, raw_ostream &O);
+  std::string getVirtualRegisterName(unsigned) const;
+  void emitVirtualRegister(unsigned int vr, raw_ostream &);
 
   unsigned int getTypeBitSize(const MachineInstr &MI, unsigned OpNo) const;
 
@@ -690,7 +692,11 @@ void pISAAsmPrinter::printOperand(const MachineInstr *MI, int OpNum,
 
   switch (MO.getType()) {
   case MachineOperand::MO_Register:
-    O << pISAInstPrinter::getRegisterName(MO.getReg());
+    if (MO.getReg().isPhysical()) {
+      O << pISAInstPrinter::getRegisterName(MO.getReg());
+    }else{
+      emitVirtualRegister(MO.getReg(), O);
+    }
     break;
 
   case MachineOperand::MO_Immediate:
@@ -724,6 +730,40 @@ void pISAAsmPrinter::printOperand(const MachineInstr *MI, int OpNum,
   default:
     llvm_unreachable("<unknown operand type>");
   }
+}
+
+std::string 
+getPISARegClassStr(TargetRegisterClass const *RC) {
+  if (RC == &pISA::Reg64bRegClass)
+    return "%r";
+  if (RC == &pISA::Reg32bRegClass)
+    return "%r";
+  if (RC == &pISA::Reg16bRegClass)
+    return "%r";
+  if (RC == &pISA::PredRegClass)
+    return "%p";
+  return "INTERNAL";
+}
+
+std::string
+pISAAsmPrinter::getVirtualRegisterName(unsigned Reg) const {
+  auto MRI = &MF->getRegInfo();
+  const TargetRegisterClass *RC = MRI->getRegClass(Reg);
+
+  std::string Name;
+  raw_string_ostream NameStr(Name);
+
+  unsigned MappedVR = RegMgr->getRegIdx(Reg);
+
+  NameStr << getPISARegClassStr(RC) << MappedVR;
+
+  NameStr.flush();
+  return Name;
+}
+
+void pISAAsmPrinter::emitVirtualRegister(unsigned int vr,
+                                          raw_ostream &O) {
+  O << getVirtualRegisterName(vr);
 }
 
 bool pISAAsmPrinter::PrintAsmOperand(const MachineInstr *MI, unsigned OpNo,

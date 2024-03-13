@@ -46,7 +46,14 @@ public:
                           unsigned Intrinsic) const override;
   LLT getOptimalMemOpLLT(const MemOp &Op,
                          const AttributeList &FuncAttributes) const override;
-
+  ConstraintType getConstraintType(StringRef Constraint) const override;
+  std::pair<unsigned, const TargetRegisterClass *>
+  getRegForInlineAsmConstraint(const TargetRegisterInfo *TRI,
+                               StringRef Constraint, MVT VT) const override;
+  void LowerAsmOperandForConstraint(SDValue Op,
+                                  StringRef Constraint,
+                                  std::vector<SDValue> &Ops,
+                                  SelectionDAG &DAG) const override;
   bool useFTZ(const MachineFunction &MF) const;
 };
 } // namespace llvm

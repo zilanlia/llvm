@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "pISAISelLowering.h"
+#include "pISASubtarget.h"
 #include "pISA.h"
 #include "llvm/IR/IntrinsicspISA.h"
 
@@ -66,4 +67,58 @@ LLT pISATargetLowering::getOptimalMemOpLLT(
 bool pISATargetLowering::useFTZ(const MachineFunction &MF) const {
   return MF.getDenormalMode(APFloat::IEEEsingle()).Output ==
          DenormalMode::PreserveSign;
+}
+
+pISATargetLowering::ConstraintType
+pISATargetLowering::getConstraintType(StringRef Constraint) const {
+  if (Constraint.size() == 1) {
+    switch (Constraint[0]) {
+    default:
+      break;
+    case 'b':
+    case 'r':
+    case 'h':
+    case 'c':
+    case 'l':
+    case 'f':
+    case 'd':
+    case '0':
+    case 'N':
+      return C_RegisterClass;
+    }
+  }
+  return TargetLowering::getConstraintType(Constraint);
+}
+
+std::pair<unsigned, const TargetRegisterClass *>
+pISATargetLowering::getRegForInlineAsmConstraint(const TargetRegisterInfo *TRI,
+                                                  StringRef Constraint,
+                                                  MVT VT) const {
+  if (Constraint.size() == 1) {
+    switch (Constraint[0]) {
+    case 'b':
+      return std::make_pair(0U, &pISA::PredRegClass);
+    case 'c':
+      return std::make_pair(0U, &pISA::Reg16bRegClass);
+    case 'h':
+      return std::make_pair(0U, &pISA::Reg16bRegClass);
+    case 'r':
+      return std::make_pair(0U, &pISA::Reg32bRegClass);
+    case 'l':
+    case 'N':
+      return std::make_pair(0U, &pISA::Reg64bRegClass);
+    case 'f':
+      return std::make_pair(0U, &pISA::Reg32bRegClass);
+    case 'd':
+      return std::make_pair(0U, &pISA::Reg64bRegClass);
+    }
+  }
+  return TargetLowering::getRegForInlineAsmConstraint(TRI, Constraint, VT);
+}
+
+void pISATargetLowering::LowerAsmOperandForConstraint(SDValue Op,
+                                                    StringRef Constraint,
+                                                    std::vector<SDValue> &Ops,
+                                                    SelectionDAG &DAG) const {
+    TargetLowering::LowerAsmOperandForConstraint(Op, Constraint, Ops, DAG);
 }

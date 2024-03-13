@@ -94,7 +94,7 @@ class GENX_LocalIdOp<string mnemonic, string fnName,
   : GENX_Op<mnemonic, !listconcat(traits, [Pure])>,
     Results<(outs LLVM_Type:$res)>, Arguments<(ins)> {
   string llvmBuilder = [{
-    llvm::Type *retType = builder.getInt16Ty();
+    llvm::Type *retType = builder.getInt32Ty();
     llvm::CallInst *ci = createDeviceFunctionCall(builder, "}] # fnName # [{",
         retType, { }, {});
     llvm::Type *opRetType = cast<llvm::IntegerType>(

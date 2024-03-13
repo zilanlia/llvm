@@ -86,14 +86,14 @@ let Namespace = "pISA" in {
   defset list<Register> LocalIdSubRegs = {
     defm SpecialReg_LocalId : VectorSpecialRegSubRegs<3, "%localid">;
   }
-  def SpecialReg_LocalIdXY  : VectorSpecialReg<"%localid.xy", RegSlice<2, LocalIdSubRegs>.R, 16>;
-  def SpecialReg_LocalIdXYZ : VectorSpecialReg<"%localid", LocalIdSubRegs, 16>;
+  def SpecialReg_LocalIdXY  : VectorSpecialReg<"%localid.xy", RegSlice<2, LocalIdSubRegs>.R, 32>;
+  def SpecialReg_LocalIdXYZ : VectorSpecialReg<"%localid", LocalIdSubRegs, 32>;
 
   defset list<Register> LocalSizeSubRegs = {
     defm SpecialReg_LocalSize : VectorSpecialRegSubRegs<3, "%localsize">;
   }
-  def SpecialReg_LocalSizeXY  : VectorSpecialReg<"%localsize.xy", RegSlice<2, LocalSizeSubRegs>.R, 16>;
-  def SpecialReg_LocalSizeXYZ : VectorSpecialReg<"%localsize", LocalSizeSubRegs, 16>;
+  def SpecialReg_LocalSizeXY  : VectorSpecialReg<"%localsize.xy", RegSlice<2, LocalSizeSubRegs>.R, 32>;
+  def SpecialReg_LocalSizeXYZ : VectorSpecialReg<"%localsize", LocalSizeSubRegs, 32>;
 
   defset list<Register> GroupIdSubRegs = {
     defm SpecialReg_GroupId : VectorSpecialRegSubRegs<3, "%groupid">;
@@ -110,6 +110,8 @@ let Namespace = "pISA" in {
   def SpecialReg_SubgroupId : Register<"%subgroupid">;
   def SpecialReg_LaneId     : Register<"%laneid">;
   def SpecialReg_LogicalSubSliceId : Register<"%logicalsubsliceid">;
+
+  def SpecialReg_ImplArgBuffer : Register<"%implargbuffer">;
 
   // begin intel embargo
   // Raytracing Special Registers
@@ -133,21 +135,22 @@ let Namespace = "pISA" in {
   def Pred : PredRegisterClass<[i1], 8, (add DummyReg)>;
   def Reg8b : GeneralRegisterClass<[i8], 8, (add (sequence "Reg8b_%u", 0, 3))>;
   def Reg16b : GeneralRegisterClass<[i16, f16], 16,
-    (add LocalIdSubRegs, LocalSizeSubRegs, SpecialReg_LaneId,
+    (add SpecialReg_LaneId,
          SpecialReg_LogicalSubSliceId,
          // begin intel embargo
          SpecialReg_RTAsyncStackId, SpecialReg_RTShaderType,
          // end intel embargo
          (sequence "Reg16b_%u", 0, 3))>;
   def Reg32b : GeneralRegisterClass<[i32, f32], 32,
-    (add GroupIdSubRegs, GroupCountSubRegs, SpecialReg_SubgroupId,
+    (add GroupIdSubRegs, GroupCountSubRegs, SpecialReg_SubgroupId, LocalIdSubRegs,
+         LocalSizeSubRegs,
          (sequence "Reg32b_%u", 0, 3))>;
   def Reg64b : GeneralRegisterClass<[i64, f64], 64,
     (add
       // begin intel embargo
       SpecialReg_RTGlobalPointer, SpecialReg_RTKSPPointer,
       // end intel embargo
-      (sequence "Reg64b_%u", 0, 3)
+      SpecialReg_ImplArgBuffer, (sequence "Reg64b_%u", 0, 3)
       )>;
 
   //
@@ -192,9 +195,9 @@ let Namespace = "pISA" in {
 
   // 16b vectors
   def RegV2_16b : GeneralRegisterClass<[v2i16, v2f16], 16,
-    (add Reg16bx2, SpecialReg_LocalIdXY, SpecialReg_LocalSizeXY)>;
+    (add Reg16bx2)>;
   def RegV3_16b : GeneralRegisterClass<[v3i16, v3f16], 16,
-    (add Reg16bx3, SpecialReg_LocalIdXYZ, SpecialReg_LocalSizeXYZ)>;
+    (add Reg16bx3)>;
   def RegV4_16b : GeneralRegisterClass<[v4i16, v4f16], 16, (add Reg16bx4)>;
 
   // 32b subregisters
@@ -215,9 +218,11 @@ let Namespace = "pISA" in {
 
   // 32b vectors
   def RegV2_32b : GeneralRegisterClass<[v2i32, v2f32], 32,
-    (add Reg32bx2, SpecialReg_GroupIdXY, SpecialReg_GroupCountXY)>;
+    (add Reg32bx2, SpecialReg_GroupIdXY, SpecialReg_GroupCountXY,
+         SpecialReg_LocalIdXY, SpecialReg_LocalSizeXY)>;
   def RegV3_32b : GeneralRegisterClass<[v3i32, v3f32], 32,
-    (add Reg32bx3, SpecialReg_GroupIdXYZ, SpecialReg_GroupCountXYZ)>;
+    (add Reg32bx3, SpecialReg_GroupIdXYZ, SpecialReg_GroupCountXYZ,
+         SpecialReg_LocalIdXYZ, SpecialReg_LocalSizeXYZ)>;
   def RegV4_32b : GeneralRegisterClass<[v4i32, v4f32], 32, (add Reg32bx4)>;
 
   // 64b subregisters

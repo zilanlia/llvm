@@ -134,6 +134,8 @@ bool pISAInstructionSelector::select(MachineInstr &I) {
 
   // If it's not a GMIR instruction, we've selected it already.
   if (!I.isPreISelOpcode() && Opcode != TargetOpcode::DBG_VALUE) {
+    if (I.isCopy())
+      return selectCopy(I);
     return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
   }
 
@@ -462,8 +464,20 @@ bool pISAInstructionSelector::selectCopy(MachineInstr &I) const {
   Register SrcReg = I.getOperand(1).getReg();
   LLT DstTy = MRI.getType(DstReg);
   LLT SrcTy = MRI.getType(SrcReg);
+
+  if(!SrcTy.isValid()){
+    SrcTy = DstTy;
+  }
+
+  if(!DstTy.isValid()){
+    DstTy = SrcTy;
+  }
+
   auto *DstRC = TRI.getRegClassFromLLT(DstTy);
   auto *SrcRC = TRI.getRegClassFromLLT(SrcTy);
+
+  MRI.setRegClass(DstReg, DstRC);
+  MRI.setRegClass(SrcReg, SrcRC);
 
   if (DstTy.getSizeInBits() != SrcTy.getSizeInBits()) {
     assert(false && "Operands with different bit size!");
